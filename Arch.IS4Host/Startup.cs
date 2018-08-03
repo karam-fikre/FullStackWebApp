@@ -1,8 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using Arch.IS4Host.Data;
+﻿using Arch.IS4Host.Data;
 using Arch.IS4Host.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Reflection;
 
 namespace Arch.IS4Host
 {
@@ -27,8 +24,15 @@ namespace Arch.IS4Host
 
         public void ConfigureServices(IServiceCollection services)
         {
+            //Store connection string as a var
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            //Store assembly for migration
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            
+            //Replace DbContext database from SqlLite in template to Postgres
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -49,9 +53,18 @@ namespace Arch.IS4Host
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients())
+                //Use Postgres Database for stroing configuration data
+                .AddConfigurationStore(confiqDb=>{
+                    confiqDb.ConfigureDbContext=db=>db.UseNpgsql(connectionString,
+                    sql=>sql.MigrationsAssembly(migrationsAssembly));
+                    })
+
+                //Use Postgres Databse for storing operational data
+                .AddConfigurationStore(operationalDb =>
+                 {
+                     operationalDb.ConfigureDbContext = db => db.UseNpgsql(connectionString,
+                       sql => sql.MigrationsAssembly(migrationsAssembly));
+                 })
                 .AddAspNetIdentity<ApplicationUser>();
 
             if (Environment.IsDevelopment())
