@@ -46,13 +46,7 @@ namespace Arch.IS4Host
                 iis.AutomaticAuthentication = false;
             });
 
-            var builder = services.AddIdentityServer(options =>
-            {
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
-            })
+            var builder = services.AddIdentityServer()
                 //Use Postgres Database for stroing configuration data
                 .AddConfigurationStore(confiqDb=>{
                     confiqDb.ConfigureDbContext=db=>db.UseNpgsql(connectionString,
@@ -60,7 +54,7 @@ namespace Arch.IS4Host
                     })
 
                 //Use Postgres Databse for storing operational data
-                .AddConfigurationStore(operationalDb =>
+                .AddOperationalStore(operationalDb =>
                  {
                      operationalDb.ConfigureDbContext = db => db.UseNpgsql(connectionString,
                        sql => sql.MigrationsAssembly(migrationsAssembly));
