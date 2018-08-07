@@ -1,6 +1,7 @@
 ﻿using Arch.IS4Host.Data;
 using Arch.IS4Host.Models;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Arch.IS4Host
@@ -81,6 +83,8 @@ namespace Arch.IS4Host
 
         public void Configure(IApplicationBuilder app)
         {
+            InitializeDatabase(app);
+
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -97,13 +101,54 @@ namespace Arch.IS4Host
         }
 
         private void InitializeDatabase(IApplicationBuilder app){
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            //Using a services scope
+            using (var serviceScope =
+                app.ApplicationServices.GetService<IServiceScopeFactory>()
+                .CreateScope())
             {
-               var PersistedGrantDbContext= serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
+                //Create Persisted Grant Database (using a single db here) 
+                //if doesn't exist, and run outstanding migrations
+               var PersistedGrantDbContext= serviceScope.ServiceProvider
+                    .GetRequiredService<PersistedGrantDbContext>();
                PersistedGrantDbContext.Database.Migrate();
 
-                var configDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                //Create IS4 Configuration Database (using a single db here) 
+                //if doesn't exist, and run outstanding migrations
+                var configDbContext = serviceScope.ServiceProvider
+                    .GetRequiredService<ConfigurationDbContext>();
                 configDbContext.Database.Migrate();
+
+                //Generating the records corresponding to the Clients, IdentityResources, and
+                //API Resources that are defined in Config class
+                if(!configDbContext.Clients.Any())
+                {
+                    foreach (var client in Config.GetClients())
+                    {
+                        configDbContext.Clients.Add(client.ToEntity());
+                    }
+
+                    configDbContext.SaveChanges();
+                }
+
+                if (!configDbContext.IdentityResources.Any())
+                {
+                    foreach (var res in Config.GetIdentityResources())
+                    {
+                        configDbContext.IdentityResources.Add(res.ToEntity());
+                    }
+
+                    configDbContext.SaveChanges();
+                }
+
+                if (!configDbContext.ApiResources.Any())
+                {
+                    foreach (var api in Config.GetApis())
+                    {
+                        configDbContext.ApiResources.Add(api.ToEntity());
+                    }
+
+                    configDbContext.SaveChanges();
+                }
             }
         }
     }
