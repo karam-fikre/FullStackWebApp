@@ -38,3 +38,32 @@
 2018-08-04 15:43:11.002 +02:00 [DBG] Using Identity.External as default scheme for sign-out
 2018-08-04 15:43:11.005 +02:00 [DBG] Using Identity.Application as default scheme for challenge
 2018-08-04 15:43:11.006 +02:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-08-06 18:20:42.623 +02:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-08-06 18:20:42.826 +02:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-08-06 18:20:42.827 +02:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-08-06 18:20:42.827 +02:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-08-06 18:20:42.828 +02:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-08-06 21:48:55.070 +02:00 [DBG] Using Identity.Application as default scheme for authentication
+2018-08-06 21:48:55.117 +02:00 [DBG] Using Identity.External as default scheme for sign-in
+2018-08-06 21:48:55.119 +02:00 [DBG] Using Identity.External as default scheme for sign-out
+2018-08-06 21:48:55.123 +02:00 [DBG] Using Identity.Application as default scheme for challenge
+2018-08-06 21:48:55.123 +02:00 [DBG] Using Identity.Application as default scheme for forbid
+2018-08-06 21:50:01.928 +02:00 [DBG] Request path /.well-known/openid-configuration matched to endpoint type Discovery
+2018-08-06 21:50:02.012 +02:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+2018-08-06 21:50:02.024 +02:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+2018-08-06 21:50:02.053 +02:00 [DBG] Start discovery request
+2018-08-06 21:50:07.064 +02:00 [DBG] Found [] as all scopes in database
+2018-08-06 21:50:51.045 +02:00 [INF] AuthenticationScheme: Identity.Application was challenged.
+2018-08-06 21:51:19.136 +02:00 [DBG] CORS request made for path: /account/login from origin: null but was ignored because path was not for an allowed IdentityServer CORS endpoint
+2018-08-06 21:51:20.244 +02:00 [DBG] Augmenting SignInContext
+2018-08-06 21:51:20.251 +02:00 [DBG] Adding idp claim with value: local
+2018-08-06 21:51:20.251 +02:00 [DBG] Adding amr claim with value: pwd
+2018-08-06 21:51:20.252 +02:00 [DBG] Adding auth_time claim with value: 1533585080
+2018-08-06 21:51:20.271 +02:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2018-08-06 21:51:20.382 +02:00 [INF] AuthenticationScheme: Identity.Application was successfully authenticated.
+2018-08-06 21:51:20.387 +02:00 [INF] AuthenticationScheme: Identity.Application was successfully authenticated.
+2018-08-06 21:51:20.488 +02:00 [DBG] 0 persisted grants found for 19c167f1-e121-445e-8b13-d0d2c42a3825
+2018-08-06 21:51:31.650 +02:00 [INF] AuthenticationScheme: Identity.Application was successfully authenticated.
+2018-08-06 21:51:31.659 +02:00 [INF] AuthenticationScheme: Identity.Application was successfully authenticated.
+2018-08-06 21:51:34.578 +02:00 [INF] AuthenticationScheme: Identity.Application was successfully authenticated.
+2018-08-06 21:51:34.583 +02:00 [INF] AuthenticationScheme: Identity.Application was successfully authenticated.

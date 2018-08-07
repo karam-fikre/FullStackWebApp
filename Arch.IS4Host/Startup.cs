@@ -1,5 +1,6 @@
 ﻿using Arch.IS4Host.Data;
 using Arch.IS4Host.Models;
+using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -93,6 +94,17 @@ namespace Arch.IS4Host
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseMvcWithDefaultRoute();
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app){
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+               var PersistedGrantDbContext= serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
+               PersistedGrantDbContext.Database.Migrate();
+
+                var configDbContext = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+                configDbContext.Database.Migrate();
+            }
         }
     }
 }
